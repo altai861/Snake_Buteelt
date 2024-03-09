@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <body></body>
+    <script>
+        const boardSizeX = 20, boardSizeY = 30;
+        let snake = [];
+        let food = [];
+        let direction = "down";
+        let gameStatus = true;
+        //create snakes head
+        snake[0][0] = Math.floor(Math.random() * boardSizeX);
+        snake[0][1] = Math.floor(Math.random() * boardSizeY);
+        //check given coordinate is in snakes body
+        function isInBody(x, y){
+            for(let i = 0; i < snake.length; i++){
+                if(snake[i][0] === x && snake[i][1] === y){
+                    return true;
+                } 
+            }
+            return false;
+        }
+
+        function foodGenerate(){
+            let cordinate = [ Math.floor(Math.random() * boardSizeX), Math.floor(Math.random() * boardSizeY)];
+            if( !isInBody(cordinate[0], cordinate[1])){
+                return cordinate;
+            }
+            else return foodGenerate();
+        }
+        //generate first food in game. 
+        food = foodGenerate();
+        //if x or y coordite is not in board it returns true
+        function checkCollison(X, Y){
+            if(X >= 0 || Y >= 0 || X < boardSizeX || Y < boardSizeY){
+                for(let i = 0; i < snake.length; i++){
+                    if(X === snake[i][0] && Y === snake[i][1]){
+                        return true;
+                    }
+                }
+                return false;
+            }
+            else return true;
+        }
+        
+        function movement(action) {
+            let newHead = [];
+            switch (action) {
+                case "right":
+                    if (direction === "up" || direction === "down") {
+                        newHead = [snake[0][0], snake[0][1] + 1];
+                    }
+                    break;
+                case "left":
+                    if (direction === "up" || direction === "down") {
+                        newHead = [snake[0][0], snake[0][1] - 1];
+                    }
+                    break;
+                case "up":
+                    if (direction === "right" || direction === "left") {
+                        newHead = [snake[0][0] - 1, snake[0][1]];
+                    }
+                    break;
+                case "down":
+                    if (direction === "right" || direction === "left") {
+                        newHead = [snake[0][0] + 1, snake[0][1]];
+                    }
+                    break;
+                default:
+                    break;
+            }
+            if (checkCollision(newHead[0], newHead[1])) {
+                gameStatus = false;
+            } else if (newHead[0] === food[0] && newHead[1] === food[1]) {
+                snake.unshift(newHead);
+                food = foodGenerate();
+            } else {
+                snake.unshift(newHead);
+                snake.pop();
+            }
+        }
+
+    </script>
+</html>
