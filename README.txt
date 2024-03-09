@@ -1,3 +1,7 @@
-1. ZA guys baina uu.
-2. Baina aa.
-3. Emujin baina.
+1. Suljee
+2. Magadlal
+3. Buteelt
+4. Arguud
+5. Hun ba kom
+6. Web
+7. Physics
