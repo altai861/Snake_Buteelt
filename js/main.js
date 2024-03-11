@@ -5,14 +5,16 @@ const highest = document.getElementById("highest-score")
 
 const gridSize = 40;
 let snake = [{ x: 10, y: 10 }];
-let food = generateFood();
+let food = generateFood(); // food[2] is food genre; regular friut = 0; slower buff friut = 1; extra point friut = 2;
 let highScore = localStorage.getItem("highScore") ? localStorage.getItem("highScore") : 0;
 highest.innerHTML = "Highest Score: " + highScore
 let direction = "right"
 let gameInterval;
 let gameSpeedDelay = 200;
 let gameStarted = false;
-
+let scoreGame = 0;
+let start = true;
+let speedSlowerDuration;
 function draw() {
     canvas.innerHTML = "";
     clearCanvas();
@@ -37,21 +39,33 @@ function drawFood() {
     if (gameStarted) {
         //ctx.fillStyle = "red";
         //ctx.fillRect(food.x * 15, food.y * 15, 15, 15)
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 0;
         ctx.beginPath();
         ctx.arc(food.x * 15 + 7.5, food.y * 15 + 7.5, 7.5, 0, Math.PI * 2, true)
-        ctx.fillStyle = 'red'; // Change color here
+        if(food.genre === 0) ctx.fillStyle = 'red';
+        else if (food.genre === 1) ctx.fillStyle = 'blue';
+        else ctx.fillStyle = 'purple';
         ctx.fill();
         ctx.stroke();
     }
 }
 
 function generateFood() {
+    const genreChance = Math.floor(Math.random() * 100);
+    let genre = 0;
+    if (genreChance < 70) {
+        genre = 0;
+    } else if (genreChance < 85) {
+        genre = 1;
+    } else {
+        genre = 2;
+    }
+    // console.log("Generated Food Genre:", genre);
     const x = Math.floor(Math.random() * gridSize);
     const y = Math.floor(Math.random() * gridSize);
-    return { x, y };
+    return { x, y, genre };
 }
+
 
 function move() {
     const head = { ...snake[0] };
@@ -73,9 +87,21 @@ function move() {
     snake.unshift(head);
 
     if (head.x === food.x && head.y === food.y) {
-        score.innerHTML = "Score: " + snake.length
-        if (highScore < snake.length) {
-            highScore = snake.length
+        switch(food.genre){
+            case 0:
+                scoreGame += 1;
+            break;
+            case 1:
+                scoreGame += 1;
+                slowSpeed();
+            break;
+            case 2:
+                scoreGame += 2;
+            break;
+        }
+        score.innerHTML = "Score: " + scoreGame
+        if (highScore < scoreGame) {
+            highScore = scoreGame
             localStorage.setItem("highScore", highScore)
             highest.innerHTML = "Highest Score: " + highScore
         }
@@ -93,7 +119,9 @@ function move() {
 }
 
 function startGame() {
+    scoreGame = 0;
     gameStarted = true;
+    start = false;
     gameInterval = setInterval(() => {
         move();
         checkCollision();
@@ -106,36 +134,35 @@ function handleKeyPress(event) {
         (!gameStarted && event.code === "Space") || 
         (!gameStarted && event.key === " ") 
     ) {
-        startGame()
+        startGame();
+    } else if (start) {
+        drawStartWindow();
     } else {
         switch (event.key) {
             case 'ArrowUp':
-                if (direction === "down") {
-                    break;
+                if (direction !== "down") {
+                    direction = 'up';
                 }
-                direction = 'up'
                 break;
             case 'ArrowDown':
-                if (direction === "up") {
-                    break;
+                if (direction !== "up") {
+                    direction = 'down';
                 }
-                direction = 'down';
                 break;
             case 'ArrowLeft':
-                if (direction === "right") {
-                    break;
+                if (direction !== "right") {
+                    direction = 'left';
                 }
-                direction = 'left'
                 break;
             case 'ArrowRight':
-                if (direction === "left") {
-                    break;
+                if (direction !== "left") {
+                    direction = 'right';
                 }
-                direction = 'right'
                 break;
         }
     }
 }
+drawStartWindow();
 
 document.addEventListener('keydown', handleKeyPress)
 
@@ -151,6 +178,17 @@ function increaseSpeed() {
     }
 }
 
+function slowSpeed(){
+    if (gameSpeedDelay > 150) {
+        gameSpeedDelay += 15
+    } else if (gameSpeedDelay > 100) {
+        gameSpeedDelay += 9
+    } else if (gameSpeedDelay > 50) {
+        gameSpeedDelay += 6
+    } else if (gameSpeedDelay > 25) {
+        gameSpeedDelay += 3
+    }
+}
 function checkCollision() {
     const head = snake[0];
 
@@ -174,7 +212,6 @@ function resetGame() {
     updateScore()
 }
 
-
 function stopGame() {
     //alert("Game Over")
     drawGameOver()
@@ -187,6 +224,18 @@ function drawGameOver() {
     ctx.font = '50px Segoe UI';
     ctx.fillStyle = 'black';
     ctx.textAlign = 'center';
-    ctx.fillText('Game Over', canvas.width / 2, canvas.height / 2);
+    ctx.fillText('Game Over', canvas.width / 2, canvas.height / 24 * 11 );
+    ctx.font = '25px Segoe UI';
+    ctx.fillText('Press shift button to restart the game', canvas.width / 2, canvas.height / 8 * 4 );
+
+}
+
+function drawStartWindow() {
+    ctx.font = '50px Segoe UI';
+    ctx.fillStyle = 'black';
+    ctx.textAlign = 'center';
+    ctx.fillText('Welcome to snake game', canvas.width / 2, canvas.height / 24 * 11 );
+    ctx.font = '25px Segoe UI';
+    ctx.fillText('Press shift button to restart the game', canvas.width / 2, canvas.height / 8 * 4 );
 
 }
