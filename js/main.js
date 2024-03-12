@@ -278,7 +278,7 @@ function drawGameOver() {
     ctx.fillText('Space товчийг дарж дахин тоглоно уу', canvas.width / 2, canvas.height / 8 * 3 + 20 );
 
 =======
-    ctx.fillText('Press space button to restart the game', canvas.width / 2, canvas.height / 8 * 4 );
+    ctx.fillText('Space товчийг дарж тоглоомыг эхлүүлнэ үү', canvas.width / 2, canvas.height / 8 * 4 );
     
 >>>>>>> Stashed changes
 }
