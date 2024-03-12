@@ -261,22 +261,43 @@ function stopGame() {
 }
 
 function drawGameOver() {
+    let snake_background = [[14, 27], [14, 26], [14, 25], [14, 24], [14, 23], [15, 23], [16, 23], [17, 23], [18, 23], [19, 23], [20, 23], [21, 23], [21, 24], [21, 25], [21, 26],[21,26],[21,27],[21,28],[21,29],[22,29],[23,29],[24,29],[25,29],[26,29],[27,29],[27,28],[27,27],[27,26],[28,26],[29,26]];
+    snake_background.forEach((segment) => {
+        ctx.fillStyle = "green"
+        ctx.fillRect(segment[0] * 15, segment[1] * 15, 15, 15)
+    })
+    ctx.fillStyle = "red"
+    ctx.fillRect(14 * 15, 29 * 15, 15, 15)
+
     ctx.font = '50px Segoe UI';
     ctx.fillStyle = 'black';
     ctx.textAlign = 'center';
-    ctx.fillText('Тоглоом дууслаа', canvas.width / 2, canvas.height / 24 * 11 );
+    ctx.fillText('Тоглоом дууслаа', canvas.width / 2, canvas.height / 24 * 6 + 50 );
     ctx.font = '25px Segoe UI';
-    ctx.fillText('Space товчийг дарж дахин тоглоно уу', canvas.width / 2, canvas.height / 8 * 4 );
+<<<<<<< Updated upstream
+    ctx.fillText('Space товчийг дарж дахин тоглоно уу', canvas.width / 2, canvas.height / 8 * 3 + 20 );
 
+=======
+    ctx.fillText('Press space button to restart the game', canvas.width / 2, canvas.height / 8 * 4 );
+    
+>>>>>>> Stashed changes
 }
 
 function drawStartWindow() {
+    let snake_background = [[14, 27], [14, 26], [14, 25], [14, 24], [14, 23], [15, 23], [16, 23], [17, 23], [18, 23], [19, 23], [20, 23], [21, 23], [21, 24], [21, 25], [21, 26],[21,26],[21,27],[21,28],[21,29],[22,29],[23,29],[24,29],[25,29],[26,29],[27,29],[27,28],[27,27],[27,26],[28,26],[29,26]];
+    snake_background.forEach((segment) => {
+        ctx.fillStyle = "green"
+        ctx.fillRect(segment[0] * 15, segment[1] * 15, 15, 15)
+    })
+    ctx.fillStyle = "red"
+    ctx.fillRect(14 * 15, 29 * 15, 15, 15)
+
     ctx.font = '50px Segoe UI';
     ctx.fillStyle = 'black';
     ctx.textAlign = 'center';
-    ctx.fillText('Могой тоглоомд', canvas.width / 2, canvas.height / 24 * 11 );
-    ctx.fillText('тавтай морил', canvas.width / 2, canvas.height / 24 * 11 + 50 );
+    ctx.fillText('Могой тоглоомд', canvas.width / 2, canvas.height / 24 * 6 );
+    ctx.fillText('тавтай морил', canvas.width / 2, canvas.height / 24 * 6 + 50 );
     ctx.font = '25px Segoe UI';
-    ctx.fillText('Space товчийг дарж тоглоомыг эхлүүлнэ үү', canvas.width / 2, canvas.height / 8 * 4 + 60 );
+    ctx.fillText('Space товчийг дарж тоглоомыг эхлүүлнэ үү', canvas.width / 2, canvas.height / 8 * 3 + 20 );
 
 }

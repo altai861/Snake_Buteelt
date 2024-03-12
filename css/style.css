@@ -21,7 +21,9 @@ html, body {
     background-color: rgb(0, 0, 0);
     text-align: center;
 }
-
+#logo{
+    position: absolute;
+}
 #snake-board {
     background-color: white
 }
