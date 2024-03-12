@@ -29,3 +29,7 @@ html, body {
 .main-text {
     color: white;
 }
+
+label {
+    color: white;
+}

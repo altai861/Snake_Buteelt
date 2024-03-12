@@ -2,17 +2,18 @@ const canvas = document.getElementById("snake-board")
 const ctx = canvas.getContext("2d");
 const score = document.getElementById("current-score");
 const highest = document.getElementById("highest-score")
+const hanaNevtreh = document.getElementById("hanaNevtreh")
 
 const gridSize = 40;
 let snake = [{ x: 10, y: 10 }];
-let food = generateFood(); // food[2] is food genre; regular friut = 0; slower buff friut = 1; extra point friut = 2;
+let food = generateFood(snake); // food[2] is food genre; regular friut = 0; slower buff friut = 1; extra point friut = 2;
 let highScore = localStorage.getItem("highScore") ? localStorage.getItem("highScore") : 0;
-highest.innerHTML = "Highest Score: " + highScore
+highest.innerHTML = "Авсан хамгийн өндөр оноо: " + highScore
 let direction = "right"
 let gameInterval;
 let gameSpeedDelay = 200;
 let gameStarted = false;
-let scoreGame = 0;
+let scoreGame = 1;
 let start = true;
 let speedSlowerDuration;
 function draw() {
@@ -50,7 +51,16 @@ function drawFood() {
     }
 }
 
-function generateFood() {
+function inSnake(x, y, snake) {
+    for (let i = 0; i < snake.length; i++) {
+        if (snake[i].x === x && snake[i].y === y) {
+            return true
+        }
+    }
+    return false;
+}
+
+function generateFood(snake) {
     const genreChance = Math.floor(Math.random() * 100);
     let genre = 0;
     if (genreChance < 70) {
@@ -61,8 +71,17 @@ function generateFood() {
         genre = 2;
     }
     // console.log("Generated Food Genre:", genre);
-    const x = Math.floor(Math.random() * gridSize);
-    const y = Math.floor(Math.random() * gridSize);
+    let x, y
+    while (true) {
+        x = Math.floor(Math.random() * gridSize);
+        y = Math.floor(Math.random() * gridSize);
+
+        if (inSnake(x, y, snake)) {
+            continue
+        } else {
+            break
+        }
+    }
     return { x, y, genre };
 }
 
@@ -90,22 +109,25 @@ function move() {
         switch(food.genre){
             case 0:
                 scoreGame += 1;
-            break;
+                break;
             case 1:
                 scoreGame += 1;
                 slowSpeed();
-            break;
+                break;
             case 2:
                 scoreGame += 2;
-            break;
+                break;
+            default:
+                scoreGame += 1
+                break;
         }
-        score.innerHTML = "Score: " + scoreGame
+        score.innerHTML = "Оноо: " + scoreGame
         if (highScore < scoreGame) {
             highScore = scoreGame
             localStorage.setItem("highScore", highScore)
-            highest.innerHTML = "Highest Score: " + highScore
+            highest.innerHTML = "Авсан хамгийн өндөр оноо: " + highScore
         }
-        food = generateFood()
+        food = generateFood(snake)
         increaseSpeed()
         clearInterval(gameInterval)
         gameInterval = setInterval(() => {
@@ -193,7 +215,11 @@ function checkCollision() {
     const head = snake[0];
 
     if (head.x < 0 || head.x >= gridSize || head.y < 0 || head.y >= gridSize) {
-        resetGame();
+        if (hanaNevtreh.checked === true) {
+            hanaNevter()
+        } else {
+            resetGame();
+        }
     }
 
     for (let i = 1; i < snake.length; i++) {
@@ -203,10 +229,24 @@ function checkCollision() {
     }
 }
 
+function hanaNevter() {
+    let head = snake[0]
+
+    if (head.x === -1 && (head.y >= 0 || head.y < gridSize)) {
+        snake[0] = { x: gridSize - 1, y: head.y }
+    } else if (head.y === -1 && (head.x >= 0 || head.x < gridSize)) {
+        snake[0] = { x: head.x, y: gridSize - 1 }
+    } else if (head.x === gridSize && (head.y >= 0 || head.y < gridSize)) {
+        snake[0] = { x: 0, y: head.y }
+    } else if (head.y === gridSize && (head.x >=0 || head.x < gridSize)) {
+        snake[0] = { x: head.x, y: 0 }
+    }
+}
+
 function resetGame() {
     stopGame();
     snake = [{ x:10, y:10 }]
-    food = generateFood()
+    food = generateFood(snake)
     direction = "left"
     gameSpeedDelay = 200
     updateScore()
@@ -224,9 +264,9 @@ function drawGameOver() {
     ctx.font = '50px Segoe UI';
     ctx.fillStyle = 'black';
     ctx.textAlign = 'center';
-    ctx.fillText('Game Over', canvas.width / 2, canvas.height / 24 * 11 );
+    ctx.fillText('Тоглоом дууслаа', canvas.width / 2, canvas.height / 24 * 11 );
     ctx.font = '25px Segoe UI';
-    ctx.fillText('Press shift button to restart the game', canvas.width / 2, canvas.height / 8 * 4 );
+    ctx.fillText('Space товчийг дарж дахин тоглоно уу', canvas.width / 2, canvas.height / 8 * 4 );
 
 }
 
@@ -234,8 +274,9 @@ function drawStartWindow() {
     ctx.font = '50px Segoe UI';
     ctx.fillStyle = 'black';
     ctx.textAlign = 'center';
-    ctx.fillText('Welcome to snake game', canvas.width / 2, canvas.height / 24 * 11 );
+    ctx.fillText('Могой тоглоомд', canvas.width / 2, canvas.height / 24 * 11 );
+    ctx.fillText('тавтай морил', canvas.width / 2, canvas.height / 24 * 11 + 50 );
     ctx.font = '25px Segoe UI';
-    ctx.fillText('Press shift button to restart the game', canvas.width / 2, canvas.height / 8 * 4 );
+    ctx.fillText('Space товчийг дарж тоглоомыг эхлүүлнэ үү', canvas.width / 2, canvas.height / 8 * 4 + 60 );
 
 }
